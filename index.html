@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Blueprint Biomecánico Q4 - Telemetría 06:00 AM</title>
+  <style>
+    :root {
+      --bg-dark: #0a0f18;
+      --card-bg: #121a29;
+      --accent-cyan: #00e5ff;
+      --accent-blue: #0077ff;
+      --text-main: #f0f6fc;
+      --text-muted: #8b9bb4;
+      --border-card: #1f2d42;
+      --alert-red: #ff3366;
+      --alert-bg: rgba(255, 51, 102, 0.15);
+      --success-green: #00ffaa;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+    body { background-color: var(--bg-dark); color: var(--text-main); min-height: 100vh; padding: 12px; }
+    .header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 12px; border-bottom: 1px solid var(--border-card); margin-bottom: 16px; }
+    .title-box h1 { font-size: 16px; font-weight: 800; color: var(--accent-cyan); letter-spacing: 0.5px; }
+    .title-box p { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+    .clock-badge { background: #162238; border: 1px solid var(--border-card); border-radius: 8px; padding: 6px 10px; text-align: right; }
+    .clock-badge .time { font-size: 14px; font-weight: 700; color: var(--accent-cyan); font-variant-numeric: tabular-nums; }
+    .clock-badge .date { font-size: 10px; color: var(--text-muted); text-transform: uppercase; }
+    .btn-icon { background: transparent; border: none; color: var(--text-muted); font-size: 18px; cursor: pointer; padding: 6px; }
+    .days-nav { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 16px; }
+    .day-btn { background: var(--card-bg); border: 1px solid var(--border-card); color: var(--text-muted); padding: 8px 4px; border-radius: 8px; font-size: 11px; font-weight: 700; text-align: center; cursor: pointer; }
+    .day-btn.active { background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan)); color: #000; border-color: transparent; }
+    .card { background: var(--card-bg); border: 1px solid var(--border-card); border-radius: 12px; padding: 14px; margin-bottom: 16px; }
+    .card-title { font-size: 13px; font-weight: 700; color: var(--accent-cyan); text-transform: uppercase; margin-bottom: 12px; display: flex; justify-content: space-between; }
+    .exercise-media { width: 100%; border-radius: 8px; overflow: hidden; background: #000; margin-bottom: 12px; text-align: center; border: 1px solid var(--border-card); }
+    .exercise-img { width: 100%; max-height: 240px; object-fit: contain; display: block; }
+    .exercise-title { font-size: 15px; font-weight: 700; margin-bottom: 4px; color: var(--text-main); }
+    .exercise-sub { font-size: 11px; color: var(--accent-cyan); margin-bottom: 12px; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+    .form-group { display: flex; flex-direction: column; }
+    .form-group label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px; font-weight: 600; }
+    .input-ctrl, select.input-ctrl { background: #0b1320; border: 1px solid var(--border-card); color: var(--text-main); border-radius: 6px; padding: 8px; font-size: 13px; outline: none; }
+    .input-ctrl:focus { border-color: var(--accent-cyan); }
+    textarea.input-ctrl { resize: vertical; min-height: 44px; font-size: 12px; }
+    .btn-submit { width: 100%; background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan)); color: #000; border: none; border-radius: 8px; padding: 12px; font-size: 13px; font-weight: 800; cursor: pointer; margin-top: 10px; text-transform: uppercase; }
+    .alert-box { background: var(--alert-bg); border: 1px solid var(--alert-red); color: var(--alert-red); border-radius: 8px; padding: 10px; font-size: 11px; font-weight: 600; margin-bottom: 12px; display: none; }
+    .status-badge { display: inline-block; padding: 3px 6px; border-radius: 4px; font-size: 9px; font-weight: 700; text-transform: uppercase; }
+    .status-synced { background: rgba(0, 255, 170, 0.2); color: var(--success-green); }
+    .status-local { background: rgba(255, 187, 0, 0.2); color: #ffbb00; }
+    .history-table { width: 100%; border-collapse: collapse; font-size: 11px; margin-top: 8px; }
+    .history-table th, .history-table td { padding: 6px; text-align: left; border-bottom: 1px solid var(--border-card); }
+    .history-table th { color: var(--text-muted); font-size: 10px; text-transform: uppercase; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="title-box">
+      <h1>BLUEPRINT 04 | FASE 2</h1>
+      <p>Hipertrofia Estructural &bull; Sucursal Centro</p>
+    </div>
+    <div class="clock-badge">
+      <div class="time" id="live-time">06:00:00</div>
+      <div class="date" id="live-date">LUN &bull; 10/11/2026</div>
+    </div>
+    <button class="btn-icon" onclick="openSettings()">⚙️</button>
+  </div>
+
+  <div class="days-nav">
+    <div class="day-btn active" onclick="selectDay(1)">DÍA 1<br><span style="font-size:9px;font-weight:normal">TORSO A</span></div>
+    <div class="day-btn" onclick="selectDay(2)">DÍA 2<br><span style="font-size:9px;font-weight:normal">PIERNA A</span></div>
+    <div class="day-btn" onclick="selectDay(3)">DÍA 3<br><span style="font-size:9px;font-weight:normal">TORSO B</span></div>
+    <div class="day-btn" onclick="selectDay(4)">DÍA 4<br><span style="font-size:9px;font-weight:normal">PIERNA B</span></div>
+  </div>
+
+  <div class="alert-box" id="eva-alert">⚠️ UMBRAL EVA &gt; 2 DETECTADO: Abortar progresión de carga y revisar retracción escapular/rotuliana.</div>
+  <div class="alert-box" id="hr-alert">⚠️ FC MÁX &ge; 140 BPM: Exceso de presión craneal a las 06:00 AM. Reducir velocidad de caminadora.</div>
+
+  <div class="card">
+    <div class="card-title">
+      <span id="module-title">DÍA 1: TORSO A</span>
+      <span class="status-badge status-local" id="sync-status">MODO LOCAL</span>
+    </div>
+
+    <div class="form-group" style="margin-bottom:12px;">
+      <label>Seleccionar Ejercicio</label>
+      <select class="input-ctrl" id="exercise-select" onchange="renderExerciseDetails()"></select>
+    </div>
+
+    <div class="exercise-media">
+      <img id="exercise-img" class="exercise-img" src="" alt="Esquema Biomecánico">
+    </div>
+
+    <div class="exercise-title" id="exercise-name">-</div>
+    <div class="exercise-sub" id="exercise-target">-</div>
+
+    <div class="grid-3">
+      <div class="form-group">
+        <label>Serie #</label>
+        <input type="number" class="input-ctrl" id="input-set" value="1" min="1" max="6">
+      </div>
+      <div class="form-group">
+        <label>Carga (kg/lb)</label>
+        <input type="text" class="input-ctrl" id="input-load" placeholder="Ej: 50 kg">
+      </div>
+      <div class="form-group">
+        <label>Reps</label>
+        <input type="number" class="input-ctrl" id="input-reps" value="10">
+      </div>
+    </div>
+
+    <div class="grid-3">
+      <div class="form-group">
+        <label>TUT Excéntrico</label>
+        <select class="input-ctrl" id="input-tut">
+          <option value="3s (Regla)" selected>3s (Regla)</option>
+          <option value="2s">2s</option>
+          <option value="4s">4s</option>
+          <option value="Isométrico">Isométrico</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>RPE (7.5-8)</label>
+        <select class="input-ctrl" id="input-rpe">
+          <option value="7.0">7.0</option>
+          <option value="7.5" selected>7.5</option>
+          <option value="8.0">8.0</option>
+          <option value="8.5">8.5</option>
+          <option value="9.0">9.0</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>RIR</label>
+        <select class="input-ctrl" id="input-rir">
+          <option value="2" selected>2 (Regla)</option>
+          <option value="1">1</option>
+          <option value="3">3</option>
+          <option value="0">0 (Fallo)</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="form-group">
+        <label>Dolor Articular (EVA 0-10)</label>
+        <select class="input-ctrl" id="input-eva" onchange="checkAlerts()">
+          <option value="0" selected>0 - Cero dolor</option>
+          <option value="1">1 - Molestia mínima</option>
+          <option value="2">2 - Límite admisible</option>
+          <option value="3">3 - Alerta (Abortar)</option>
+          <option value="4">4+ - Dolor activo</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Hora Registro</label>
+        <input type="text" class="input-ctrl" id="input-time-preview" readonly style="color:var(--accent-cyan); font-weight:bold;">
+      </div>
+    </div>
+
+    <div class="form-group" style="margin-top:4px;">
+      <label>Observaciones (Máquina / Variación / Ajuste)</label>
+      <textarea class="input-ctrl" id="input-notes" placeholder="Ej: Máquina ocupada, sustituido por polea baja o banco 45°"></textarea>
+    </div>
+
+    <button class="btn-submit" onclick="logCurrentSet()">REGISTRAR SERIE EN VIVO</button>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Caminadora &bull; 06:05 AM (10 min)</div>
+    <div class="grid-2">
+      <div class="form-group">
+        <label>Tiempo (min)</label>
+        <input type="number" class="input-ctrl" id="tread-time" value="10">
+      </div>
+      <div class="form-group">
+        <label>Calorías (kcal)</label>
+        <input type="number" class="input-ctrl" id="tread-cals" placeholder="kcal">
+      </div>
+      <div class="form-group">
+        <label>Distancia (km)</label>
+        <input type="number" step="0.01" class="input-ctrl" id="tread-dist" placeholder="km">
+      </div>
+      <div class="form-group">
+        <label>FC Máx (bpm &lt; 140)</label>
+        <input type="number" class="input-ctrl" id="tread-hr" placeholder="bpm" onchange="checkAlerts()">
+      </div>
+    </div>
+    <button class="btn-submit" style="background:#162238; color:var(--accent-cyan); border:1px solid var(--accent-cyan);" onclick="logTreadmill()">REGISTRAR CARDIO BASE</button>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Historial de Turno Actual</div>
+    <table class="history-table">
+      <thead>
+        <tr>
+          <th>Hora</th>
+          <th>Ejercicio</th>
+          <th>Carga</th>
+          <th>Reps</th>
+          <th>EVA</th>
+        </tr>
+      </thead>
+      <tbody id="history-body"></tbody>
+    </table>
+  </div>
+
+  <script>
+    const DAY_ROUTINES = {
+      1: {
+        name: "DÍA 1: TORSO A (Empuje & Expansión)",
+        exercises: [
+          { name: "Pectoral Inclinado (30°-45°)", target: "Haz Clavicular & Neutralidad Cervical", img: "image_779a9b.png" },
+          { name: "Pullover de Expansión", target: "Caja Torácica & Pectoral Menor", img: "image_779a9b.png" },
+          { name: "Tríceps en Polea (Integración Distal)", target: "Vasto Externo & Codos Anclados", img: "image_779a9b.png" }
+        ]
+      },
+      2: {
+        name: "DÍA 2: PIERNA A (Dominancia Cadera)",
+        exercises: [
+          { name: "Hip Thrust con Barra", target: "Glúteo Mayor & Cero Cizallamiento", img: "image_779a9b.png" },
+          { name: "Glúteo Medio en Máquina/Polea", target: "Estabilizador Pélvico Anti-Valgo", img: "image_779a9b.png" }
+        ]
+      },
+      3: {
+        name: "DÍA 3: TORSO B (Salud Cervical 3D)",
+        exercises: [
+          { name: "Deltoides Medio y Posterior (Inclinado 15°)", target: "Retractores Escapulares & Anti-Cifosis", img: "image_779a9b.png" },
+          { name: "Bíceps con Supinación", target: "Braquial Anterior & Palanca", img: "image_779a9b.png" }
+        ]
+      },
+      4: {
+        name: "DÍA 4: PIERNA B (Cadena Posterior)",
+        exercises: [
+          { name: "Elevación de Talones (Pantorrilla)", target: "Bomba Retorno Vascular & Sóleo", img: "image_779a9b.png" },
+          { name: "Curl Femoral Tumbado/Sentado", target: "Equilibrio Isquiosural Antagonista", img: "image_779a9b.png" }
+        ]
+      }
+    };
+
+    let currentDay = 1;
+    let records = JSON.parse(localStorage.getItem("rbm_gym_records") || "[]");
+    let gasEndpoint = localStorage.getItem("rbm_gas_endpoint") || "";
+
+    function updateLiveClock() {
+      const now = new Date();
+      const h = String(now.getHours()).padStart(2, '0');
+      const m = String(now.getMinutes()).padStart(2, '0');
+      const s = String(now.getSeconds()).padStart(2, '0');
+      document.getElementById('live-time').innerText = `${h}:${m}:${s}`;
+      document.getElementById('input-time-preview').value = `${h}:${m}:${s}`;
+
+      const days = ["DOM", "LUN", "MAR", "MIÉ", "JUE", "VIE", "SÁB"];
+      const dayName = days[now.getDay()];
+      const dayNum = String(now.getDate()).padStart(2, '0');
+      const monthNum = String(now.getMonth() + 1).padStart(2, '0');
+      const year = now.getFullYear();
+      document.getElementById('live-date').innerText = `${dayName} • ${dayNum}/${monthNum}/${year}`;
+    }
+    setInterval(updateLiveClock, 1000);
+    updateLiveClock();
+
+    function selectDay(dayNum) {
+      currentDay = dayNum;
+      document.querySelectorAll('.day-btn').forEach((btn, idx) => {
+        btn.classList.toggle('active', (idx + 1) === dayNum);
+      });
+      document.getElementById('module-title').innerText = DAY_ROUTINES[dayNum].name;
+      populateExerciseSelect();
+    }
+
+    function populateExerciseSelect() {
+      const sel = document.getElementById('exercise-select');
+      sel.innerHTML = '';
+      DAY_ROUTINES[currentDay].exercises.forEach((ex, idx) => {
+        const opt = document.createElement('option');
+        opt.value = idx;
+        opt.innerText = ex.name;
+        sel.appendChild(opt);
+      });
+      renderExerciseDetails();
+    }
+
+    function renderExerciseDetails() {
+      const exIdx = document.getElementById('exercise-select').value;
+      const ex = DAY_ROUTINES[currentDay].exercises[exIdx];
+      if (!ex) return;
+      document.getElementById('exercise-name').innerText = ex.name;
+      document.getElementById('exercise-target').innerText = ex.target;
+      document.getElementById('exercise-img').src = ex.img;
+    }
+
+    function checkAlerts() {
+      const eva = parseInt(document.getElementById('input-eva').value);
+      document.getElementById('eva-alert').style.display = eva > 2 ? 'block' : 'none';
+
+      const hr = parseInt(document.getElementById('tread-hr').value || "0");
+      document.getElementById('hr-alert').style.display = hr >= 140 ? 'block' : 'none';
+    }
+
+    function logCurrentSet() {
+      const now = new Date();
+      const exIdx = document.getElementById('exercise-select').value;
+      const ex = DAY_ROUTINES[currentDay].exercises[exIdx];
+
+      const record = {
+        fecha: document.getElementById('live-date').innerText.split('•')[1].trim(),
+        dia: `DÍA ${currentDay}`,
+        hora: document.getElementById('input-time-preview').value,
+        fase: "Fase 2",
+        modulo: DAY_ROUTINES[currentDay].name,
+        ejercicio: ex.name,
+        serie: document.getElementById('input-set').value,
+        carga: document.getElementById('input-load').value || "0",
+        reps: document.getElementById('input-reps').value,
+        tut: document.getElementById('input-tut').value,
+        rpe: document.getElementById('input-rpe').value,
+        rir: document.getElementById('input-rir').value,
+        eva: document.getElementById('input-eva').value,
+        observaciones: document.getElementById('input-notes').value || ""
+      };
+
+      records.unshift(record);
+      localStorage.setItem("rbm_gym_records", JSON.stringify(records));
+      renderHistory();
+
+      if (gasEndpoint) {
+        fetch(gasEndpoint, {
+          method: "POST",
+          mode: "no-cors",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(record)
+        }).catch(err => console.log("GAS Sync Error", err));
+      }
+
+      let currentSet = parseInt(record.serie);
+      document.getElementById('input-set').value = currentSet + 1;
+      document.getElementById('input-notes').value = "";
+    }
+
+    function logTreadmill() {
+      const record = {
+        fecha: document.getElementById('live-date').innerText.split('•')[1].trim(),
+        dia: `DÍA ${currentDay}`,
+        hora: document.getElementById('input-time-preview').value,
+        fase: "Fase 2",
+        modulo: "Caminadora Lubricación",
+        ejercicio: "Caminadora (10 min)",
+        serie: "1",
+        carga: `${document.getElementById('tread-cals').value || '0'} kcal`,
+        reps: `${document.getElementById('tread-dist').value || '0'} km`,
+        tut: `${document.getElementById('tread-time').value} min`,
+        rpe: "Calentamiento",
+        rir: "N/A",
+        eva: "0",
+        observaciones: `FC Máx: ${document.getElementById('tread-hr').value || '0'} bpm`
+      };
+      records.unshift(record);
+      localStorage.setItem("rbm_gym_records", JSON.stringify(records));
+      renderHistory();
+
+      if (gasEndpoint) {
+        fetch(gasEndpoint, {
+          method: "POST",
+          mode: "no-cors",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(record)
+        }).catch(err => console.log("GAS Sync Error", err));
+      }
+    }
+
+    function renderHistory() {
+      const tbody = document.getElementById('history-body');
+      tbody.innerHTML = '';
+      records.slice(0, 10).forEach(r => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${r.hora}</td>
+          <td>${r.ejercicio}</td>
+          <td>${r.carga}</td>
+          <td>${r.reps}</td>
+          <td style="color:${r.eva > 2 ? 'var(--alert-red)' : 'var(--text-main)'}">${r.eva}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function openSettings() {
+      const url = prompt("Configurar Webhook de Google Apps Script (URL /exec):", gasEndpoint);
+      if (url !== null) {
+        gasEndpoint = url.trim();
+        localStorage.setItem("rbm_gas_endpoint", gasEndpoint);
+        updateSyncStatus();
+      }
+    }
+
+    function updateSyncStatus() {
+      const badge = document.getElementById('sync-status');
+      if (gasEndpoint) {
+        badge.innerText = "NUBE ACTIVADA";
+        badge.className = "status-badge status-synced";
+      } else {
+        badge.innerText = "MODO LOCAL";
+        badge.className = "status-badge status-local";
+      }
+    }
+
+    selectDay(1);
+    updateSyncStatus();
+    renderHistory();
+  </script>
+</body>
+</html>
