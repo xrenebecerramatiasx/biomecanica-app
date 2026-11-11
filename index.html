@@ -10,7 +10,7 @@
   <link rel="icon" type="image/png" href="icon-192.png">
   <link rel="apple-touch-icon" href="icon-192.png">
   <title>Blueprint Biomecánico Q4 - Noviembre</title>
-  <script type="text/javascript" src="https://gc.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=JoWLH-y78J_sNOz81c2zIZBpe1Ao3nQPCmy9weroEcecR16OR2fXxOjqoislBJzLBWOnZ-59xZY13TRGILD4iMWp_0yF8fAkK7POTi20buTaWC5Dq3eePTIuhp4usawVDUumVcvBNr1Emzl2T5RvEMwoOh0jDFHSgut8DKLYI6erK-6uNzshqJYlVyA6Ar3CrlHfNoSxaeuYceJ2khrp34whlehCYsa8eaUaZJzfXy37-ihG4wIa3N-910Ws0ySh65uRmpIeK05R-ywCTAbo4vHbdBD8_i8Du20LB1Z7IMge8FuwY3tWgEqrIcC1tX2T" charset="UTF-8"></script><style>
+  <style>
     :root {
       --bg-dark: #0a0f18;
       --card-bg: #121a29;
@@ -86,6 +86,31 @@
   <div class="alert-box" id="eva-alert">⚠️ UMBRAL EVA &gt; 2 DETECTADO: Dolor articular fuera de norma. Reducir peso 15% o suspender progresión.</div>
   <div class="alert-box" id="hr-alert">⚠️ FC MÁX &ge; 140 BPM: Precaución Valsalva / presión intraocular a las 06:00 AM. Reducir velocidad.</div>
 
+  <!-- SECCIÓN CAMINADORA PRECALENTAMIENTO (UBICACIÓN PRE-PESAS) -->
+  <div class="card">
+    <div class="card-title">Caminadora Precalentamiento (10 min @ 4.5 km/h, 2-3%)</div>
+    <div class="grid-2">
+      <div class="form-group">
+        <label>Tiempo (min)</label>
+        <input type="number" class="input-ctrl" id="tread-time" value="10">
+      </div>
+      <div class="form-group">
+        <label>Calorías (kcal)</label>
+        <input type="number" class="input-ctrl" id="tread-cals" placeholder="kcal">
+      </div>
+      <div class="form-group">
+        <label>Distancia (km)</label>
+        <input type="number" step="0.01" class="input-ctrl" id="tread-dist" placeholder="km">
+      </div>
+      <div class="form-group">
+        <label>FC Máx (bpm &lt; 140)</label>
+        <input type="number" class="input-ctrl" id="tread-hr" placeholder="bpm" onchange="checkAlerts()">
+      </div>
+    </div>
+    <button class="btn-submit" style="background:#162238; color:var(--accent-cyan); border:1px solid var(--accent-cyan);" onclick="logTreadmill()">REGISTRAR CAMINADORA</button>
+  </div>
+
+  <!-- SECCIÓN DE EJERCICIOS DIARIOS PROGRAMADOS -->
   <div class="card">
     <div class="card-title">
       <span id="module-title">DÍA 1: TORSO A</span>
@@ -171,29 +196,7 @@
     <button class="btn-submit" onclick="logCurrentSet()">REGISTRAR SERIE EN VIVO</button>
   </div>
 
-  <div class="card">
-    <div class="card-title">Caminadora Precalentamiento (10 min @ 4.5 km/h, 2-3%)</div>
-    <div class="grid-2">
-      <div class="form-group">
-        <label>Tiempo (min)</label>
-        <input type="number" class="input-ctrl" id="tread-time" value="10">
-      </div>
-      <div class="form-group">
-        <label>Calorías (kcal)</label>
-        <input type="number" class="input-ctrl" id="tread-cals" placeholder="kcal">
-      </div>
-      <div class="form-group">
-        <label>Distancia (km)</label>
-        <input type="number" step="0.01" class="input-ctrl" id="tread-dist" placeholder="km">
-      </div>
-      <div class="form-group">
-        <label>FC Máx (bpm &lt; 140)</label>
-        <input type="number" class="input-ctrl" id="tread-hr" placeholder="bpm" onchange="checkAlerts()">
-      </div>
-    </div>
-    <button class="btn-submit" style="background:#162238; color:var(--accent-cyan); border:1px solid var(--accent-cyan);" onclick="logTreadmill()">REGISTRAR CAMINADORA</button>
-  </div>
-
+  <!-- PLANILLA DE REGISTROS EN MEMORIA -->
   <div class="card">
     <div class="card-title">
       <span>Planilla de Registros en Memoria</span>
