@@ -3,8 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Blueprint Biomecánico Q4 - Telemetría 06:00 AM</title>
-  <style>
+  <meta name="theme-color" content="#0a0f18">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Blueprint Q4">
+  <link rel="icon" type="image/png" href="icon-192.png">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <title>Blueprint Biomecánico Q4 - Noviembre</title>
+  <script type="text/javascript" src="https://gc.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=JoWLH-y78J_sNOz81c2zIZBpe1Ao3nQPCmy9weroEcecR16OR2fXxOjqoislBJzLBWOnZ-59xZY13TRGILD4iMWp_0yF8fAkK7POTi20buTaWC5Dq3eePTIuhp4usawVDUumVcvBNr1Emzl2T5RvEMwoOh0jDFHSgut8DKLYI6erK-6uNzshqJYlVyA6Ar3CrlHfNoSxaeuYceJ2khrp34whlehCYsa8eaUaZJzfXy37-ihG4wIa3N-910Ws0ySh65uRmpIeK05R-ywCTAbo4vHbdBD8_i8Du20LB1Z7IMge8FuwY3tWgEqrIcC1tX2T" charset="UTF-8"></script><style>
     :root {
       --bg-dark: #0a0f18;
       --card-bg: #121a29;
@@ -16,25 +22,27 @@
       --alert-red: #ff3366;
       --alert-bg: rgba(255, 51, 102, 0.15);
       --success-green: #00ffaa;
+      --warn-yellow: #ffbb00;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
-    body { background-color: var(--bg-dark); color: var(--text-main); min-height: 100vh; padding: 12px; }
-    .header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 12px; border-bottom: 1px solid var(--border-card); margin-bottom: 16px; }
-    .title-box h1 { font-size: 16px; font-weight: 800; color: var(--accent-cyan); letter-spacing: 0.5px; }
+    body { background-color: var(--bg-dark); color: var(--text-main); min-height: 100vh; padding: 12px; padding-bottom: 40px; }
+    .header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 12px; border-bottom: 1px solid var(--border-card); margin-bottom: 14px; }
+    .title-box h1 { font-size: 15px; font-weight: 800; color: var(--accent-cyan); letter-spacing: 0.5px; }
     .title-box p { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
     .clock-badge { background: #162238; border: 1px solid var(--border-card); border-radius: 8px; padding: 6px 10px; text-align: right; }
     .clock-badge .time { font-size: 14px; font-weight: 700; color: var(--accent-cyan); font-variant-numeric: tabular-nums; }
     .clock-badge .date { font-size: 10px; color: var(--text-muted); text-transform: uppercase; }
     .btn-icon { background: transparent; border: none; color: var(--text-muted); font-size: 18px; cursor: pointer; padding: 6px; }
-    .days-nav { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 16px; }
+    .days-nav { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 14px; }
     .day-btn { background: var(--card-bg); border: 1px solid var(--border-card); color: var(--text-muted); padding: 8px 4px; border-radius: 8px; font-size: 11px; font-weight: 700; text-align: center; cursor: pointer; }
     .day-btn.active { background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan)); color: #000; border-color: transparent; }
-    .card { background: var(--card-bg); border: 1px solid var(--border-card); border-radius: 12px; padding: 14px; margin-bottom: 16px; }
-    .card-title { font-size: 13px; font-weight: 700; color: var(--accent-cyan); text-transform: uppercase; margin-bottom: 12px; display: flex; justify-content: space-between; }
-    .exercise-media { width: 100%; border-radius: 8px; overflow: hidden; background: #000; margin-bottom: 12px; text-align: center; border: 1px solid var(--border-card); }
+    .card { background: var(--card-bg); border: 1px solid var(--border-card); border-radius: 12px; padding: 14px; margin-bottom: 14px; }
+    .card-title { font-size: 12px; font-weight: 700; color: var(--accent-cyan); text-transform: uppercase; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
+    .exercise-media { width: 100%; border-radius: 8px; overflow: hidden; background: #000; margin-bottom: 12px; text-align: center; border: 1px solid var(--border-card); min-height: 140px; display: flex; align-items: center; justify-content: center; }
     .exercise-img { width: 100%; max-height: 240px; object-fit: contain; display: block; }
-    .exercise-title { font-size: 15px; font-weight: 700; margin-bottom: 4px; color: var(--text-main); }
-    .exercise-sub { font-size: 11px; color: var(--accent-cyan); margin-bottom: 12px; }
+    .exercise-fallback { padding: 20px; font-size: 12px; color: var(--text-muted); line-height: 1.5; }
+    .exercise-title { font-size: 14px; font-weight: 700; margin-bottom: 4px; color: var(--text-main); }
+    .exercise-sub { font-size: 11px; color: var(--accent-cyan); margin-bottom: 12px; line-height: 1.4; }
     .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
     .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 10px; }
     .form-group { display: flex; flex-direction: column; }
@@ -43,26 +51,29 @@
     .input-ctrl:focus { border-color: var(--accent-cyan); }
     textarea.input-ctrl { resize: vertical; min-height: 44px; font-size: 12px; }
     .btn-submit { width: 100%; background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan)); color: #000; border: none; border-radius: 8px; padding: 12px; font-size: 13px; font-weight: 800; cursor: pointer; margin-top: 10px; text-transform: uppercase; }
-    .alert-box { background: var(--alert-bg); border: 1px solid var(--alert-red); color: var(--alert-red); border-radius: 8px; padding: 10px; font-size: 11px; font-weight: 600; margin-bottom: 12px; display: none; }
+    .alert-box { background: var(--alert-bg); border: 1px solid var(--alert-red); color: var(--alert-red); border-radius: 8px; padding: 10px; font-size: 11px; font-weight: 600; margin-bottom: 12px; display: none; line-height: 1.4; }
     .status-badge { display: inline-block; padding: 3px 6px; border-radius: 4px; font-size: 9px; font-weight: 700; text-transform: uppercase; }
     .status-synced { background: rgba(0, 255, 170, 0.2); color: var(--success-green); }
-    .status-local { background: rgba(255, 187, 0, 0.2); color: #ffbb00; }
+    .status-local { background: rgba(255, 187, 0, 0.2); color: var(--warn-yellow); }
     .history-table { width: 100%; border-collapse: collapse; font-size: 11px; margin-top: 8px; }
-    .history-table th, .history-table td { padding: 6px; text-align: left; border-bottom: 1px solid var(--border-card); }
+    .history-table th, .history-table td { padding: 6px 4px; text-align: left; border-bottom: 1px solid var(--border-card); }
     .history-table th { color: var(--text-muted); font-size: 10px; text-transform: uppercase; }
+    .btn-del { background: transparent; border: 1px solid var(--alert-red); color: var(--alert-red); border-radius: 4px; padding: 2px 6px; font-size: 10px; cursor: pointer; }
+    .actions-bar { display: flex; gap: 8px; margin-top: 10px; }
+    .btn-sec { flex: 1; background: #162238; border: 1px solid var(--border-card); color: var(--text-main); padding: 8px; border-radius: 6px; font-size: 11px; font-weight: 600; cursor: pointer; text-align: center; }
   </style>
 </head>
 <body>
   <div class="header">
     <div class="title-box">
-      <h1>BLUEPRINT 04 | FASE 2</h1>
-      <p>Hipertrofia Estructural &bull; Sucursal Centro</p>
+      <h1>BLUEPRINT Q4 (NOVIEMBRE)</h1>
+      <p>4 Días Torso/Pierna &bull; 06:00 AM</p>
     </div>
     <div class="clock-badge">
       <div class="time" id="live-time">06:00:00</div>
-      <div class="date" id="live-date">LUN &bull; 10/11/2026</div>
+      <div class="date" id="live-date">CARGANDO...</div>
     </div>
-    <button class="btn-icon" onclick="openSettings()">⚙️</button>
+    <button class="btn-icon" onclick="openSettings()" title="Configuración de nube">⚙️</button>
   </div>
 
   <div class="days-nav">
@@ -72,8 +83,8 @@
     <div class="day-btn" onclick="selectDay(4)">DÍA 4<br><span style="font-size:9px;font-weight:normal">PIERNA B</span></div>
   </div>
 
-  <div class="alert-box" id="eva-alert">⚠️ UMBRAL EVA &gt; 2 DETECTADO: Abortar progresión de carga y revisar retracción escapular/rotuliana.</div>
-  <div class="alert-box" id="hr-alert">⚠️ FC MÁX &ge; 140 BPM: Exceso de presión craneal a las 06:00 AM. Reducir velocidad de caminadora.</div>
+  <div class="alert-box" id="eva-alert">⚠️ UMBRAL EVA &gt; 2 DETECTADO: Dolor articular fuera de norma. Reducir peso 15% o suspender progresión.</div>
+  <div class="alert-box" id="hr-alert">⚠️ FC MÁX &ge; 140 BPM: Precaución Valsalva / presión intraocular a las 06:00 AM. Reducir velocidad.</div>
 
   <div class="card">
     <div class="card-title">
@@ -81,17 +92,18 @@
       <span class="status-badge status-local" id="sync-status">MODO LOCAL</span>
     </div>
 
-    <div class="form-group" style="margin-bottom:12px;">
-      <label>Seleccionar Ejercicio</label>
+    <div class="form-group" style="margin-bottom:10px;">
+      <label>Ejercicio Programado</label>
       <select class="input-ctrl" id="exercise-select" onchange="renderExerciseDetails()"></select>
     </div>
 
     <div class="exercise-media">
-      <img id="exercise-img" class="exercise-img" src="" alt="Esquema Biomecánico">
+      <img id="exercise-img" class="exercise-img" src="" alt="" onerror="handleImgError(this)">
+      <div id="exercise-fallback" class="exercise-fallback" style="display:none;"></div>
     </div>
 
     <div class="exercise-title" id="exercise-name">-</div>
-    <div class="exercise-sub" id="exercise-target">-</div>
+    <div class="exercise-sub" id="exercise-params">-</div>
 
     <div class="grid-3">
       <div class="form-group">
@@ -99,8 +111,8 @@
         <input type="number" class="input-ctrl" id="input-set" value="1" min="1" max="6">
       </div>
       <div class="form-group">
-        <label>Carga (kg/lb)</label>
-        <input type="text" class="input-ctrl" id="input-load" placeholder="Ej: 50 kg">
+        <label>Carga</label>
+        <input type="text" class="input-ctrl" id="input-load" placeholder="Ej: 45 kg">
       </div>
       <div class="form-group">
         <label>Reps</label>
@@ -110,13 +122,8 @@
 
     <div class="grid-3">
       <div class="form-group">
-        <label>TUT Excéntrico</label>
-        <select class="input-ctrl" id="input-tut">
-          <option value="3s (Regla)" selected>3s (Regla)</option>
-          <option value="2s">2s</option>
-          <option value="4s">4s</option>
-          <option value="Isométrico">Isométrico</option>
-        </select>
+        <label>Tempo / TUT</label>
+        <input type="text" class="input-ctrl" id="input-tut" value="3s excéntrico">
       </div>
       <div class="form-group">
         <label>RPE (7.5-8)</label>
@@ -141,13 +148,13 @@
 
     <div class="grid-2">
       <div class="form-group">
-        <label>Dolor Articular (EVA 0-10)</label>
+        <label>EVA Articular (0-10)</label>
         <select class="input-ctrl" id="input-eva" onchange="checkAlerts()">
-          <option value="0" selected>0 - Cero dolor</option>
-          <option value="1">1 - Molestia mínima</option>
+          <option value="0" selected>0 - Sin molestia</option>
+          <option value="1">1 - Tensión mínima</option>
           <option value="2">2 - Límite admisible</option>
-          <option value="3">3 - Alerta (Abortar)</option>
-          <option value="4">4+ - Dolor activo</option>
+          <option value="3">3 - Alerta (&gt;2 Reducir 15%)</option>
+          <option value="4">4+ - Abortar</option>
         </select>
       </div>
       <div class="form-group">
@@ -157,15 +164,15 @@
     </div>
 
     <div class="form-group" style="margin-top:4px;">
-      <label>Observaciones (Máquina / Variación / Ajuste)</label>
-      <textarea class="input-ctrl" id="input-notes" placeholder="Ej: Máquina ocupada, sustituido por polea baja o banco 45°"></textarea>
+      <label>Observaciones (Máquina / Sustitución / Ajuste)</label>
+      <textarea class="input-ctrl" id="input-notes" placeholder="Ej: Máquina ocupada, sustituido por polea o mancuernas"></textarea>
     </div>
 
     <button class="btn-submit" onclick="logCurrentSet()">REGISTRAR SERIE EN VIVO</button>
   </div>
 
   <div class="card">
-    <div class="card-title">Caminadora &bull; 06:05 AM (10 min)</div>
+    <div class="card-title">Caminadora Precalentamiento (10 min @ 4.5 km/h, 2-3%)</div>
     <div class="grid-2">
       <div class="form-group">
         <label>Tiempo (min)</label>
@@ -184,54 +191,79 @@
         <input type="number" class="input-ctrl" id="tread-hr" placeholder="bpm" onchange="checkAlerts()">
       </div>
     </div>
-    <button class="btn-submit" style="background:#162238; color:var(--accent-cyan); border:1px solid var(--accent-cyan);" onclick="logTreadmill()">REGISTRAR CARDIO BASE</button>
+    <button class="btn-submit" style="background:#162238; color:var(--accent-cyan); border:1px solid var(--accent-cyan);" onclick="logTreadmill()">REGISTRAR CAMINADORA</button>
   </div>
 
   <div class="card">
-    <div class="card-title">Historial de Turno Actual</div>
-    <table class="history-table">
-      <thead>
-        <tr>
-          <th>Hora</th>
-          <th>Ejercicio</th>
-          <th>Carga</th>
-          <th>Reps</th>
-          <th>EVA</th>
-        </tr>
-      </thead>
-      <tbody id="history-body"></tbody>
-    </table>
+    <div class="card-title">
+      <span>Planilla de Registros en Memoria</span>
+      <span id="record-count" style="color:var(--text-muted); font-size:11px;">0 registros</span>
+    </div>
+    <div style="overflow-x:auto;">
+      <table class="history-table">
+        <thead>
+          <tr>
+            <th>Hora</th>
+            <th>Día</th>
+            <th>Ejercicio</th>
+            <th>Carga</th>
+            <th>Reps</th>
+            <th>EVA</th>
+            <th>Acción</th>
+          </tr>
+        </thead>
+        <tbody id="history-body"></tbody>
+      </table>
+    </div>
+    <div class="actions-bar">
+      <button class="btn-sec" onclick="exportCSV()">📥 Descargar CSV</button>
+      <button class="btn-sec" style="color:var(--alert-red); border-color:var(--alert-red);" onclick="clearAllRecords()">🗑️ Vaciar Historial</button>
+    </div>
   </div>
 
   <script>
     const DAY_ROUTINES = {
       1: {
-        name: "DÍA 1: TORSO A (Empuje & Expansión)",
+        name: "DÍA 1: LUNES Torso A (Atracción & Escápula)",
         exercises: [
-          { name: "Pectoral Inclinado (30°-45°)", target: "Haz Clavicular & Neutralidad Cervical", img: "image_779a9b.png" },
-          { name: "Pullover de Expansión", target: "Caja Torácica & Pectoral Menor", img: "image_779a9b.png" },
-          { name: "Tríceps en Polea (Integración Distal)", target: "Vasto Externo & Codos Anclados", img: "image_779a9b.png" }
+          { name: "1. Jalón al pecho en polea alta (agarre neutro medio)", params: "3-4 x 10-12 | Tempo 2-1-1-1 | Pausa 75s", img: "img_dia1_ex1.png" },
+          { name: "2. Press de pecho en máquina guiada (Chest Press)", params: "3 x 10-12 | Tempo 2-0-1-0 | Pausa 60s", img: "img_dia1_ex2.png" },
+          { name: "3. Remo con soporte en pecho con mancuernas (banco 30°)", params: "3 x 12 | Tempo 2-0-1-2 | Pausa 60s", img: "img_dia1_ex3.png" },
+          { name: "4. Face pull en polea alta con cuerda hacia frente", params: "3-4 x 15 | Tempo 2-0-1-2 | Pausa 60s", img: "img_dia1_ex4.png" },
+          { name: "5. Extensiones de tríceps en polea alta con cuerda", params: "3 x 12-15 | Tempo 2-0-1-1 | Pausa 60s", img: "img_dia1_ex5.png" },
+          { name: "6. Plank frontal en colchoneta", params: "3 x 35-45s | Estático | Pausa 60s", img: "img_dia1_ex6.png" }
         ]
       },
       2: {
-        name: "DÍA 2: PIERNA A (Dominancia Cadera)",
+        name: "DÍA 2: MARTES Pierna A (Cuádriceps & VMO)",
         exercises: [
-          { name: "Hip Thrust con Barra", target: "Glúteo Mayor & Cero Cizallamiento", img: "image_779a9b.png" },
-          { name: "Glúteo Medio en Máquina/Polea", target: "Estabilizador Pélvico Anti-Valgo", img: "image_779a9b.png" }
+          { name: "1. Prensa inclinada 45° (pies altos en plataforma)", params: "3-4 x 10-12 | Tempo 3-1-1-0 (3s exc) | Pausa 90s", img: "img_dia2_ex1.png" },
+          { name: "2. Wall Sit (Sentadilla estática contra pared 90°)", params: "3 x 35-45s | Isométrico Puro | Pausa 90s", img: "img_dia2_ex2.png" },
+          { name: "3. Extensión de cuádriceps en máquina (rango 60° a 15°)", params: "3 x 12-15 | Tempo 2-1-1-2 (2s ISO) | Pausa 60s", img: "img_dia2_ex3.png" },
+          { name: "4. Elevación de talones sentado en máquina (sóleo)", params: "3-4 x 15 | Tempo 2-2-1-1 | Pausa 60s", img: "img_dia2_ex4.png" },
+          { name: "5. Abducción de cadera en máquina / polea", params: "3 x 15 | Tempo 2-0-1-1 | Pausa 60s", img: "img_dia2_ex5.png" },
+          { name: "6. Bird-Dog (Pájaro-Perro en colchoneta pre-pesas)", params: "3 x 10 c/lado | Lento y controlado | Pausa 45s", img: "img_dia2_ex6.png" }
         ]
       },
       3: {
-        name: "DÍA 3: TORSO B (Salud Cervical 3D)",
+        name: "DÍA 3: JUEVES Torso B (Empuje & Salud Cervical)",
         exercises: [
-          { name: "Deltoides Medio y Posterior (Inclinado 15°)", target: "Retractores Escapulares & Anti-Cifosis", img: "image_779a9b.png" },
-          { name: "Bíceps con Supinación", target: "Braquial Anterior & Palanca", img: "image_779a9b.png" }
+          { name: "1. Press inclinado con mancuernas en banco a 30°", params: "3 x 10-12 | Tempo 2-1-1-0 | Pausa 75s", img: "img_dia3_ex1.png" },
+          { name: "2. Remo sentado en polea baja (agarre neutro)", params: "3-4 x 12 | Tempo 2-0-1-2 | Pausa 60s", img: "img_dia3_ex2.png" },
+          { name: "3. Elevaciones Y-T-W tumbado boca abajo en banco", params: "3 x 8 c/letra | Tempo 2-0-1-1 | Pausa 60s", img: "img_dia3_ex3.png" },
+          { name: "4. Elevaciones laterales de hombro inclinadas c/mancuerna", params: "3 x 12-15 | Tempo 2-0-1-1 | Pausa 60s", img: "img_dia3_ex4.png" },
+          { name: "5. Descompresión escapular en polea baja", params: "3 x 12 | Tempo 2-0-1-2 | Pausa 60s", img: "img_dia3_ex5.png" },
+          { name: "6. Dead Bug (Bicho muerto al cierre en colchoneta)", params: "3 x 10 c/lado | Movimiento Lento | Pausa 45s", img: "img_dia3_ex6.png" }
         ]
       },
       4: {
-        name: "DÍA 4: PIERNA B (Cadena Posterior)",
+        name: "DÍA 4: VIERNES Pierna B (Cadena Posterior & Glúteo)",
         exercises: [
-          { name: "Elevación de Talones (Pantorrilla)", target: "Bomba Retorno Vascular & Sóleo", img: "image_779a9b.png" },
-          { name: "Curl Femoral Tumbado/Sentado", target: "Equilibrio Isquiosural Antagonista", img: "image_779a9b.png" }
+          { name: "1. Peso muerto rumano con mancuernas (bisagra cadera)", params: "3-4 x 10-12 | Tempo 3-1-1-0 (3s exc) | Pausa 90s", img: "img_dia4_ex1.png" },
+          { name: "2. Curl femoral acostado o sentado en máquina", params: "3-4 x 12-15 | Tempo 3-0-1-1 | Pausa 60s", img: "img_dia4_ex2.png" },
+          { name: "3. Hip Thrust / Elevación de pelvis en banco", params: "3 x 10-12 | Tempo 2-1-1-2 | Pausa 75s", img: "img_dia4_ex3.png" },
+          { name: "4. Elevación de talones de pie en máquina / Smith", params: "3 x 15 | Tempo 2-1-1-2 | Pausa 60s", img: "img_dia4_ex4.png" },
+          { name: "5. Plancha lateral en suelo sobre antebrazo", params: "3 x 25-35s c/lado | Estático | Pausa 60s", img: "img_dia4_ex5.png" }
         ]
       }
     };
@@ -284,8 +316,22 @@
       const ex = DAY_ROUTINES[currentDay].exercises[exIdx];
       if (!ex) return;
       document.getElementById('exercise-name').innerText = ex.name;
-      document.getElementById('exercise-target').innerText = ex.target;
-      document.getElementById('exercise-img').src = ex.img;
+      document.getElementById('exercise-params').innerText = ex.params;
+
+      const imgEl = document.getElementById('exercise-img');
+      const fallbackEl = document.getElementById('exercise-fallback');
+      fallbackEl.style.display = 'none';
+      imgEl.style.display = 'block';
+      imgEl.src = ex.img;
+    }
+
+    function handleImgError(img) {
+      img.style.display = 'none';
+      const fallbackEl = document.getElementById('exercise-fallback');
+      const exIdx = document.getElementById('exercise-select').value;
+      const ex = DAY_ROUTINES[currentDay].exercises[exIdx];
+      fallbackEl.innerHTML = `<strong>${ex.name}</strong><br><span style="color:var(--accent-cyan);">${ex.params}</span><br><br><span style="font-size:10px; color:var(--text-muted);">(Imagen ${ex.img} pendiente de subir en repo)</span>`;
+      fallbackEl.style.display = 'block';
     }
 
     function checkAlerts() {
@@ -297,19 +343,19 @@
     }
 
     function logCurrentSet() {
-      const now = new Date();
       const exIdx = document.getElementById('exercise-select').value;
       const ex = DAY_ROUTINES[currentDay].exercises[exIdx];
 
       const record = {
+        id: Date.now(),
         fecha: document.getElementById('live-date').innerText.split('•')[1].trim(),
         dia: `DÍA ${currentDay}`,
         hora: document.getElementById('input-time-preview').value,
-        fase: "Fase 2",
+        fase: "Fase 2 (Nov)",
         modulo: DAY_ROUTINES[currentDay].name,
         ejercicio: ex.name,
         serie: document.getElementById('input-set').value,
-        carga: document.getElementById('input-load').value || "0",
+        carga: document.getElementById('input-load').value || "0 kg",
         reps: document.getElementById('input-reps').value,
         tut: document.getElementById('input-tut').value,
         rpe: document.getElementById('input-rpe').value,
@@ -319,7 +365,7 @@
       };
 
       records.unshift(record);
-      localStorage.setItem("rbm_gym_records", JSON.stringify(records));
+      saveRecords();
       renderHistory();
 
       if (gasEndpoint) {
@@ -328,7 +374,7 @@
           mode: "no-cors",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(record)
-        }).catch(err => console.log("GAS Sync Error", err));
+        }).catch(err => console.log("Sync error:", err));
       }
 
       let currentSet = parseInt(record.serie);
@@ -338,12 +384,13 @@
 
     function logTreadmill() {
       const record = {
+        id: Date.now(),
         fecha: document.getElementById('live-date').innerText.split('•')[1].trim(),
         dia: `DÍA ${currentDay}`,
         hora: document.getElementById('input-time-preview').value,
-        fase: "Fase 2",
-        modulo: "Caminadora Lubricación",
-        ejercicio: "Caminadora (10 min)",
+        fase: "Fase 2 (Nov)",
+        modulo: "Precalentamiento",
+        ejercicio: "Caminadora Inclinada (10 min @ 4.5 km/h, 2-3%)",
         serie: "1",
         carga: `${document.getElementById('tread-cals').value || '0'} kcal`,
         reps: `${document.getElementById('tread-dist').value || '0'} km`,
@@ -353,8 +400,9 @@
         eva: "0",
         observaciones: `FC Máx: ${document.getElementById('tread-hr').value || '0'} bpm`
       };
+
       records.unshift(record);
-      localStorage.setItem("rbm_gym_records", JSON.stringify(records));
+      saveRecords();
       renderHistory();
 
       if (gasEndpoint) {
@@ -363,28 +411,74 @@
           mode: "no-cors",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(record)
-        }).catch(err => console.log("GAS Sync Error", err));
+        }).catch(err => console.log("Sync error:", err));
       }
+    }
+
+    function deleteRecord(id) {
+      if (confirm("¿Eliminar este registro duplicado/erróneo?")) {
+        records = records.filter(r => r.id !== id);
+        saveRecords();
+        renderHistory();
+      }
+    }
+
+    function clearAllRecords() {
+      if (confirm("¿Vaciar todo el historial local en el teléfono? (Si tienes Google Sheets configurado, tus datos en la hoja permanecerán)")) {
+        records = [];
+        saveRecords();
+        renderHistory();
+      }
+    }
+
+    function saveRecords() {
+      localStorage.setItem("rbm_gym_records", JSON.stringify(records));
+      document.getElementById('record-count').innerText = `${records.length} registros`;
     }
 
     function renderHistory() {
       const tbody = document.getElementById('history-body');
       tbody.innerHTML = '';
-      records.slice(0, 10).forEach(r => {
+      document.getElementById('record-count').innerText = `${records.length} registros`;
+
+      records.forEach(r => {
         const tr = document.createElement('tr');
         tr.innerHTML = `
           <td>${r.hora}</td>
-          <td>${r.ejercicio}</td>
+          <td>${r.dia}</td>
+          <td style="max-width:110px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${r.ejercicio}">${r.ejercicio}</td>
           <td>${r.carga}</td>
           <td>${r.reps}</td>
-          <td style="color:${r.eva > 2 ? 'var(--alert-red)' : 'var(--text-main)'}">${r.eva}</td>
+          <td style="color:${r.eva > 2 ? 'var(--alert-red)' : 'var(--text-main)'}; font-weight:bold;">${r.eva}</td>
+          <td><button class="btn-del" onclick="deleteRecord(${r.id})">✕</button></td>
         `;
         tbody.appendChild(tr);
       });
     }
 
+    function exportCSV() {
+      if (records.length === 0) {
+        alert("No hay registros para exportar.");
+        return;
+      }
+      const headers = ["Fecha", "Día", "Hora", "Fase", "Módulo", "Ejercicio", "Serie", "Carga", "Reps", "TUT", "RPE", "RIR", "EVA", "Observaciones"];
+      const rows = records.map(r => [
+        `"${r.fecha}"`, `"${r.dia}"`, `"${r.hora}"`, `"${r.fase}"`, `"${r.modulo}"`,
+        `"${r.ejercicio}"`, `"${r.serie}"`, `"${r.carga}"`, `"${r.reps}"`, `"${r.tut}"`,
+        `"${r.rpe}"`, `"${r.rir}"`, `"${r.eva}"`, `"${(r.observaciones||'').replace(/"/g, '""')}"`
+      ]);
+      const csvContent = "data:text/csv;charset=utf-8," + [headers.join(","), ...rows.map(e => e.join(","))].join("\n");
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", `telemetria_gym_${new Date().toISOString().slice(0,10)}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
     function openSettings() {
-      const url = prompt("Configurar Webhook de Google Apps Script (URL /exec):", gasEndpoint);
+      const url = prompt("Configurar Webhook de Google Apps Script (URL /exec):\n\nIntroduce la URL del script para sincronizar automáticamente con tu Google Sheets:", gasEndpoint);
       if (url !== null) {
         gasEndpoint = url.trim();
         localStorage.setItem("rbm_gas_endpoint", gasEndpoint);
