@@ -38,7 +38,7 @@
     .day-btn.active { background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan)); color: #000; border-color: transparent; }
     .card { background: var(--card-bg); border: 1px solid var(--border-card); border-radius: 12px; padding: 14px; margin-bottom: 14px; }
     .card-title { font-size: 12px; font-weight: 700; color: var(--accent-cyan); text-transform: uppercase; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
-    .exercise-media { width: 100%; border-radius: 8px; overflow: hidden; background: #000; margin-bottom: 12px; text-align: center; border: 1px solid var(--border-card); min-height: 140px; display: flex; align-items: center; justify-content: center; }
+    .exercise-media { width: 100%; border-radius: 8px; overflow: hidden; background: #000; margin-bottom: 12px; text-align: center; border: 1px solid var(--border-card); min-height: 140px; display: flex; align-items: center; justify-content: center; cursor: zoom-in; }
     .exercise-img { width: 100%; max-height: 240px; object-fit: contain; display: block; }
     .exercise-fallback { padding: 20px; font-size: 12px; color: var(--text-muted); line-height: 1.5; }
     .exercise-title { font-size: 14px; font-weight: 700; margin-bottom: 4px; color: var(--text-main); }
@@ -61,6 +61,50 @@
     .btn-del { background: transparent; border: 1px solid var(--alert-red); color: var(--alert-red); border-radius: 4px; padding: 2px 6px; font-size: 10px; cursor: pointer; }
     .actions-bar { display: flex; gap: 8px; margin-top: 10px; }
     .btn-sec { flex: 1; background: #162238; border: 1px solid var(--border-card); color: var(--text-main); padding: 8px; border-radius: 6px; font-size: 11px; font-weight: 600; cursor: pointer; text-align: center; }
+
+    /* Modal Fullscreen Zoom */
+    .img-modal {
+      display: none;
+      position: fixed;
+      z-index: 9999;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: rgba(0, 0, 0, 0.95);
+      align-items: center;
+      justify-content: center;
+      cursor: zoom-out;
+      padding: 10px;
+      touch-action: pinch-zoom;
+    }
+    .img-modal.active {
+      display: flex;
+    }
+    .img-modal img {
+      max-width: 98%;
+      max-height: 94%;
+      object-fit: contain;
+      border-radius: 8px;
+      box-shadow: 0 0 25px rgba(0, 229, 255, 0.3);
+    }
+    .img-modal-close {
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      color: var(--accent-cyan);
+      font-size: 28px;
+      font-weight: bold;
+      background: rgba(18, 26, 41, 0.8);
+      border: 1px solid var(--border-card);
+      border-radius: 50%;
+      width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
@@ -86,7 +130,7 @@
   <div class="alert-box" id="eva-alert">⚠️ UMBRAL EVA &gt; 2 DETECTADO: Dolor articular fuera de norma. Reducir peso 15% o suspender progresión.</div>
   <div class="alert-box" id="hr-alert">⚠️ FC MÁX &ge; 140 BPM: Precaución Valsalva / presión intraocular a las 06:00 AM. Reducir velocidad.</div>
 
-  <!-- SECCIÓN CAMINADORA PRECALENTAMIENTO (UBICACIÓN PRE-PESAS) -->
+  <!-- SECCIÓN CAMINADORA PRECALENTAMIENTO -->
   <div class="card">
     <div class="card-title">Caminadora Precalentamiento (10 min @ 4.5 km/h, 2-3%)</div>
     <div class="grid-2">
@@ -123,7 +167,7 @@
     </div>
 
     <div class="exercise-media">
-      <img id="exercise-img" class="exercise-img" src="" alt="" onerror="handleImgError(this)">
+      <img id="exercise-img" class="exercise-img" src="" alt="" onerror="handleImgError(this)" onclick="openImgModal()">
       <div id="exercise-fallback" class="exercise-fallback" style="display:none;"></div>
     </div>
 
@@ -224,6 +268,12 @@
     </div>
   </div>
 
+  <!-- Modal Zoom a Pantalla Completa -->
+  <div id="image-modal" class="img-modal" onclick="closeImgModal()">
+    <div class="img-modal-close" onclick="closeImgModal()">&times;</div>
+    <img id="modal-img" src="" alt="Zoom Biomecánico">
+  </div>
+
   <script>
     const DAY_ROUTINES = {
       1: {
@@ -274,6 +324,18 @@
     let currentDay = 1;
     let records = JSON.parse(localStorage.getItem("rbm_gym_records") || "[]");
     let gasEndpoint = localStorage.getItem("rbm_gas_endpoint") || "";
+
+    function openImgModal() {
+      const src = document.getElementById('exercise-img').src;
+      if (src && document.getElementById('exercise-img').style.display !== 'none') {
+        document.getElementById('modal-img').src = src;
+        document.getElementById('image-modal').classList.add('active');
+      }
+    }
+
+    function closeImgModal() {
+      document.getElementById('image-modal').classList.remove('active');
+    }
 
     function updateLiveClock() {
       const now = new Date();
