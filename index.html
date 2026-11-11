@@ -23,16 +23,25 @@
       --alert-bg: rgba(255, 51, 102, 0.15);
       --success-green: #00ffaa;
       --warn-yellow: #ffbb00;
+      --kcal-orange: #ff9100;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
     body { background-color: var(--bg-dark); color: var(--text-main); min-height: 100vh; padding: 12px; padding-bottom: 40px; }
-    .header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 12px; border-bottom: 1px solid var(--border-card); margin-bottom: 14px; }
+    .header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 12px; border-bottom: 1px solid var(--border-card); margin-bottom: 12px; }
     .title-box h1 { font-size: 15px; font-weight: 800; color: var(--accent-cyan); letter-spacing: 0.5px; }
     .title-box p { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
     .clock-badge { background: #162238; border: 1px solid var(--border-card); border-radius: 8px; padding: 6px 10px; text-align: right; }
     .clock-badge .time { font-size: 14px; font-weight: 700; color: var(--accent-cyan); font-variant-numeric: tabular-nums; }
     .clock-badge .date { font-size: 10px; color: var(--text-muted); text-transform: uppercase; }
     .btn-icon { background: transparent; border: none; color: var(--text-muted); font-size: 18px; cursor: pointer; padding: 6px; }
+    
+    /* Barra de Telemetría Metabólica Total */
+    .kcal-bar { background: linear-gradient(90deg, #162238, #1a2a47); border: 1px solid var(--border-card); border-radius: 10px; padding: 10px 14px; margin-bottom: 14px; display: flex; justify-content: space-between; align-items: center; }
+    .kcal-bar-item { display: flex; flex-direction: column; }
+    .kcal-bar-item .lbl { font-size: 9px; color: var(--text-muted); text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px; }
+    .kcal-bar-item .val { font-size: 16px; font-weight: 800; color: var(--kcal-orange); font-variant-numeric: tabular-nums; }
+    .kcal-bar-divider { width: 1px; height: 24px; background: var(--border-card); }
+
     .days-nav { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 14px; }
     .day-btn { background: var(--card-bg); border: 1px solid var(--border-card); color: var(--text-muted); padding: 8px 4px; border-radius: 8px; font-size: 11px; font-weight: 700; text-align: center; cursor: pointer; }
     .day-btn.active { background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan)); color: #000; border-color: transparent; }
@@ -56,8 +65,8 @@
     .status-synced { background: rgba(0, 255, 170, 0.2); color: var(--success-green); }
     .status-local { background: rgba(255, 187, 0, 0.2); color: var(--warn-yellow); }
     .history-table { width: 100%; border-collapse: collapse; font-size: 11px; margin-top: 8px; }
-    .history-table th, .history-table td { padding: 6px 4px; text-align: left; border-bottom: 1px solid var(--border-card); }
-    .history-table th { color: var(--text-muted); font-size: 10px; text-transform: uppercase; }
+    .history-table th, .history-table td { padding: 6px 3px; text-align: left; border-bottom: 1px solid var(--border-card); }
+    .history-table th { color: var(--text-muted); font-size: 9px; text-transform: uppercase; }
     .btn-del { background: transparent; border: 1px solid var(--alert-red); color: var(--alert-red); border-radius: 4px; padding: 2px 6px; font-size: 10px; cursor: pointer; }
     .actions-bar { display: flex; gap: 8px; margin-top: 10px; }
     .btn-sec { flex: 1; background: #162238; border: 1px solid var(--border-card); color: var(--text-main); padding: 8px; border-radius: 6px; font-size: 11px; font-weight: 600; cursor: pointer; text-align: center; }
@@ -120,6 +129,24 @@
     <button class="btn-icon" onclick="openSettings()" title="Configuración de nube">⚙️</button>
   </div>
 
+  <!-- BARRA DE TELEMETRÍA METABÓLICA TOTAL -->
+  <div class="kcal-bar">
+    <div class="kcal-bar-item">
+      <span class="lbl">Total Sesión</span>
+      <span class="val" id="total-session-kcal">0.0 kcal</span>
+    </div>
+    <div class="kcal-bar-divider"></div>
+    <div class="kcal-bar-item">
+      <span class="lbl">Caminadora</span>
+      <span class="val" id="treadmill-kcal-disp" style="color:var(--accent-cyan);">0.0 kcal</span>
+    </div>
+    <div class="kcal-bar-divider"></div>
+    <div class="kcal-bar-item">
+      <span class="lbl">Fuerza / Pesas</span>
+      <span class="val" id="strength-kcal-disp" style="color:var(--success-green);">0.0 kcal</span>
+    </div>
+  </div>
+
   <div class="days-nav">
     <div class="day-btn active" onclick="selectDay(1)">DÍA 1<br><span style="font-size:9px;font-weight:normal">TORSO A</span></div>
     <div class="day-btn" onclick="selectDay(2)">DÍA 2<br><span style="font-size:9px;font-weight:normal">PIERNA A</span></div>
@@ -130,21 +157,21 @@
   <div class="alert-box" id="eva-alert">⚠️ UMBRAL EVA &gt; 2 DETECTADO: Dolor articular fuera de norma. Reducir peso 15% o suspender progresión.</div>
   <div class="alert-box" id="hr-alert">⚠️ FC MÁX &ge; 140 BPM: Precaución Valsalva / presión intraocular a las 06:00 AM. Reducir velocidad.</div>
 
-  <!-- SECCIÓN CAMINADORA PRECALENTAMIENTO -->
+  <!-- SECCIÓN CAMINADORA PRECALENTAMIENTO (PRE-PESAS) -->
   <div class="card">
     <div class="card-title">Caminadora Precalentamiento (10 min @ 4.5 km/h, 2-3%)</div>
     <div class="grid-2">
       <div class="form-group">
         <label>Tiempo (min)</label>
-        <input type="number" class="input-ctrl" id="tread-time" value="10">
+        <input type="number" class="input-ctrl" id="tread-time" value="10" oninput="calculateTreadmillKcal()">
       </div>
       <div class="form-group">
         <label>Calorías (kcal)</label>
-        <input type="number" class="input-ctrl" id="tread-cals" placeholder="kcal">
+        <input type="number" class="input-ctrl" id="tread-cals" placeholder="Auto o manual" style="color:var(--kcal-orange); font-weight:bold;">
       </div>
       <div class="form-group">
         <label>Distancia (km)</label>
-        <input type="number" step="0.01" class="input-ctrl" id="tread-dist" placeholder="km">
+        <input type="number" step="0.01" class="input-ctrl" id="tread-dist" placeholder="Ej: 0.75 km">
       </div>
       <div class="form-group">
         <label>FC Máx (bpm &lt; 140)</label>
@@ -181,11 +208,11 @@
       </div>
       <div class="form-group">
         <label>Carga</label>
-        <input type="text" class="input-ctrl" id="input-load" placeholder="Ej: 45 kg">
+        <input type="text" class="input-ctrl" id="input-load" placeholder="Ej: 45 kg" oninput="updateLiveKcalPreview()">
       </div>
       <div class="form-group">
         <label>Reps</label>
-        <input type="number" class="input-ctrl" id="input-reps" value="10">
+        <input type="number" class="input-ctrl" id="input-reps" value="10" oninput="updateLiveKcalPreview()">
       </div>
     </div>
 
@@ -196,7 +223,7 @@
       </div>
       <div class="form-group">
         <label>RPE (7.5-8)</label>
-        <select class="input-ctrl" id="input-rpe">
+        <select class="input-ctrl" id="input-rpe" onchange="updateLiveKcalPreview()">
           <option value="7.0">7.0</option>
           <option value="7.5" selected>7.5</option>
           <option value="8.0">8.0</option>
@@ -215,9 +242,9 @@
       </div>
     </div>
 
-    <div class="grid-2">
+    <div class="grid-3">
       <div class="form-group">
-        <label>EVA Articular (0-10)</label>
+        <label>Dolor (EVA 0-10)</label>
         <select class="input-ctrl" id="input-eva" onchange="checkAlerts()">
           <option value="0" selected>0 - Sin molestia</option>
           <option value="1">1 - Tensión mínima</option>
@@ -225,6 +252,10 @@
           <option value="3">3 - Alerta (&gt;2 Reducir 15%)</option>
           <option value="4">4+ - Abortar</option>
         </select>
+      </div>
+      <div class="form-group">
+        <label>Kcal Serie (Est.)</label>
+        <input type="text" class="input-ctrl" id="input-kcal-preview" readonly style="color:var(--kcal-orange); font-weight:bold;" value="4.5 kcal">
       </div>
       <div class="form-group">
         <label>Hora Registro</label>
@@ -255,6 +286,7 @@
             <th>Ejercicio</th>
             <th>Carga</th>
             <th>Reps</th>
+            <th style="color:var(--kcal-orange);">Kcal</th>
             <th>EVA</th>
             <th>Acción</th>
           </tr>
@@ -325,6 +357,61 @@
     let records = JSON.parse(localStorage.getItem("rbm_gym_records") || "[]");
     let gasEndpoint = localStorage.getItem("rbm_gas_endpoint") || "";
 
+    /* Modelo Biomecánico de Cálculo Calórico */
+    function calculateSetCalories(loadStr, repsVal, rpeVal) {
+      let loadKg = parseFloat((loadStr || '0').replace(/[^0-9.]/g, '')) || 0;
+      let reps = parseInt(repsVal) || 10;
+      let rpe = parseFloat(rpeVal) || 7.5;
+      
+      let kcal = 0;
+      if (loadKg > 0) {
+        // Trabajo mecánico + deuda anaeróbica + factor RPE
+        kcal = 2.5 + (loadKg * reps * 0.00045 * (rpe / 7.5));
+      } else {
+        // Isométrico / peso corporal / core (Plank, Dead Bug, Bird Dog)
+        kcal = 3.2 * (rpe / 7.5);
+      }
+      return Math.round(kcal * 10) / 10;
+    }
+
+    function updateLiveKcalPreview() {
+      const loadStr = document.getElementById('input-load').value;
+      const repsVal = document.getElementById('input-reps').value;
+      const rpeVal = document.getElementById('input-rpe').value;
+      const est = calculateSetCalories(loadStr, repsVal, rpeVal);
+      document.getElementById('input-kcal-preview').value = `${est} kcal`;
+    }
+
+    function calculateTreadmillKcal() {
+      const timeMin = parseFloat(document.getElementById('tread-time').value) || 10;
+      const manualCals = document.getElementById('tread-cals').value;
+      if (!manualCals || manualCals === "0") {
+        // Modelo ACSM: 4.5 km/h @ 2.5% inclinado ~ 6.0 kcal/min para ~75-80kg
+        const estCals = Math.round(timeMin * 6.0);
+        document.getElementById('tread-cals').placeholder = `${estCals} (est)`;
+      }
+    }
+
+    function recalculateTotalKcal() {
+      let totalKcal = 0;
+      let treadKcal = 0;
+      let strengthKcal = 0;
+
+      records.forEach(r => {
+        let k = parseFloat(r.kcal) || 0;
+        totalKcal += k;
+        if (r.modulo === "Precalentamiento" || r.ejercicio.includes("Caminadora")) {
+          treadKcal += k;
+        } else {
+          strengthKcal += k;
+        }
+      });
+
+      document.getElementById('total-session-kcal').innerText = `${totalKcal.toFixed(1)} kcal`;
+      document.getElementById('treadmill-kcal-disp').innerText = `${treadKcal.toFixed(1)} kcal`;
+      document.getElementById('strength-kcal-disp').innerText = `${strengthKcal.toFixed(1)} kcal`;
+    }
+
     function openImgModal() {
       const src = document.getElementById('exercise-img').src;
       if (src && document.getElementById('exercise-img').style.display !== 'none') {
@@ -388,6 +475,7 @@
       fallbackEl.style.display = 'none';
       imgEl.style.display = 'block';
       imgEl.src = ex.img;
+      updateLiveKcalPreview();
     }
 
     function handleImgError(img) {
@@ -410,6 +498,10 @@
     function logCurrentSet() {
       const exIdx = document.getElementById('exercise-select').value;
       const ex = DAY_ROUTINES[currentDay].exercises[exIdx];
+      const loadVal = document.getElementById('input-load').value || "0 kg";
+      const repsVal = document.getElementById('input-reps').value;
+      const rpeVal = document.getElementById('input-rpe').value;
+      const setKcal = calculateSetCalories(loadVal, repsVal, rpeVal);
 
       const record = {
         id: Date.now(),
@@ -420,18 +512,20 @@
         modulo: DAY_ROUTINES[currentDay].name,
         ejercicio: ex.name,
         serie: document.getElementById('input-set').value,
-        carga: document.getElementById('input-load').value || "0 kg",
-        reps: document.getElementById('input-reps').value,
+        carga: loadVal,
+        reps: repsVal,
         tut: document.getElementById('input-tut').value,
-        rpe: document.getElementById('input-rpe').value,
+        rpe: rpeVal,
         rir: document.getElementById('input-rir').value,
         eva: document.getElementById('input-eva').value,
+        kcal: setKcal,
         observaciones: document.getElementById('input-notes').value || ""
       };
 
       records.unshift(record);
       saveRecords();
       renderHistory();
+      recalculateTotalKcal();
 
       if (gasEndpoint) {
         fetch(gasEndpoint, {
@@ -448,6 +542,12 @@
     }
 
     function logTreadmill() {
+      const timeVal = parseFloat(document.getElementById('tread-time').value) || 10;
+      let calsVal = parseFloat(document.getElementById('tread-cals').value);
+      if (isNaN(calsVal) || calsVal <= 0) {
+        calsVal = Math.round(timeVal * 6.0); // Estimación ACSM
+      }
+
       const record = {
         id: Date.now(),
         fecha: document.getElementById('live-date').innerText.split('•')[1].trim(),
@@ -457,18 +557,20 @@
         modulo: "Precalentamiento",
         ejercicio: "Caminadora Inclinada (10 min @ 4.5 km/h, 2-3%)",
         serie: "1",
-        carga: `${document.getElementById('tread-cals').value || '0'} kcal`,
-        reps: `${document.getElementById('tread-dist').value || '0'} km`,
-        tut: `${document.getElementById('tread-time').value} min`,
+        carga: `${calsVal} kcal`,
+        reps: `${document.getElementById('tread-dist').value || '0.75'} km`,
+        tut: `${timeVal} min`,
         rpe: "Calentamiento",
         rir: "N/A",
         eva: "0",
+        kcal: calsVal,
         observaciones: `FC Máx: ${document.getElementById('tread-hr').value || '0'} bpm`
       };
 
       records.unshift(record);
       saveRecords();
       renderHistory();
+      recalculateTotalKcal();
 
       if (gasEndpoint) {
         fetch(gasEndpoint, {
@@ -481,18 +583,20 @@
     }
 
     function deleteRecord(id) {
-      if (confirm("¿Eliminar este registro duplicado/erróneo?")) {
+      if (confirm("¿Eliminar este registro?")) {
         records = records.filter(r => r.id !== id);
         saveRecords();
         renderHistory();
+        recalculateTotalKcal();
       }
     }
 
     function clearAllRecords() {
-      if (confirm("¿Vaciar todo el historial local en el teléfono? (Si tienes Google Sheets configurado, tus datos en la hoja permanecerán)")) {
+      if (confirm("¿Vaciar todo el historial local en el teléfono?")) {
         records = [];
         saveRecords();
         renderHistory();
+        recalculateTotalKcal();
       }
     }
 
@@ -511,9 +615,10 @@
         tr.innerHTML = `
           <td>${r.hora}</td>
           <td>${r.dia}</td>
-          <td style="max-width:110px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${r.ejercicio}">${r.ejercicio}</td>
+          <td style="max-width:105px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${r.ejercicio}">${r.ejercicio}</td>
           <td>${r.carga}</td>
           <td>${r.reps}</td>
+          <td style="color:var(--kcal-orange); font-weight:bold;">${r.kcal || '-'}</td>
           <td style="color:${r.eva > 2 ? 'var(--alert-red)' : 'var(--text-main)'}; font-weight:bold;">${r.eva}</td>
           <td><button class="btn-del" onclick="deleteRecord(${r.id})">✕</button></td>
         `;
@@ -526,11 +631,11 @@
         alert("No hay registros para exportar.");
         return;
       }
-      const headers = ["Fecha", "Día", "Hora", "Fase", "Módulo", "Ejercicio", "Serie", "Carga", "Reps", "TUT", "RPE", "RIR", "EVA", "Observaciones"];
+      const headers = ["Fecha", "Día", "Hora", "Fase", "Módulo", "Ejercicio", "Serie", "Carga", "Reps", "TUT", "RPE", "RIR", "EVA", "Kcal_Estimadas", "Observaciones"];
       const rows = records.map(r => [
         `"${r.fecha}"`, `"${r.dia}"`, `"${r.hora}"`, `"${r.fase}"`, `"${r.modulo}"`,
         `"${r.ejercicio}"`, `"${r.serie}"`, `"${r.carga}"`, `"${r.reps}"`, `"${r.tut}"`,
-        `"${r.rpe}"`, `"${r.rir}"`, `"${r.eva}"`, `"${(r.observaciones||'').replace(/"/g, '""')}"`
+        `"${r.rpe}"`, `"${r.rir}"`, `"${r.eva}"`, `"${r.kcal||0}"`, `"${(r.observaciones||'').replace(/"/g, '""')}"`
       ]);
       const csvContent = "data:text/csv;charset=utf-8," + [headers.join(","), ...rows.map(e => e.join(","))].join("\n");
       const encodedUri = encodeURI(csvContent);
@@ -563,8 +668,10 @@
     }
 
     selectDay(1);
+    calculateTreadmillKcal();
     updateSyncStatus();
     renderHistory();
+    recalculateTotalKcal();
   </script>
 </body>
 </html>
